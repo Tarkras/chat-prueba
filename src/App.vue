@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <!-- <v-app>
     <v-app-bar app>
       <v-toolbar-title class="headline text-uppercase">
         <span>Vuetify</span>
@@ -18,19 +18,24 @@
     <v-content>
       <HelloWorld/>
     </v-content>
-  </v-app>
+  </v-app>-->
+  <div id="app">
+    <CoinForm />
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+//import HelloWorld from "./components/HelloWorld";
+import CoinForm from "./components/CoinForm.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld,
+    //HelloWorld
+    CoinForm
   },
   data: () => ({
     //
-  }),
+  })
 };
 </script>
