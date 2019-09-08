@@ -13,18 +13,33 @@
           <v-col cols="3" class="pa-0">
             <v-card height="476px" max-height="100%" class="scrollbar">
               <v-list v-for="(room, index) in rooms" :key="index">
-                <v-list-item-group active-class>
-                  <v-list-item @click="changeRoom(index)">
-                    <v-avatar size="36">
-                      <v-img :src="room.photo"></v-img>
-                    </v-avatar>
-                    <v-list-item-content>
-                      <v-list-item-title class="ml-2 font-weight-bold">
-                        {{ room.name }}
-                      </v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list-item-group>
+                <v-row no-gutters>
+                  <v-col cols="9">
+                    <v-list-item-group active-class>
+                      <v-list-item @click="changeRoom(index)">
+                        <v-avatar size="36">
+                          <v-img :src="room.photo"></v-img>
+                        </v-avatar>
+                        <v-list-item-content>
+                          <v-list-item-title class="ml-2 font-weight-bold">{{
+                            room.name
+                          }}</v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list-item-group>
+                  </v-col>
+                  <v-col cols="3" align-self="center">
+                    <v-btn
+                      tile
+                      outlined
+                      x-small
+                      color="error"
+                      class="v-btn-outlined-exception"
+                      @click="deleteChat(index)"
+                      >Delete</v-btn
+                    >
+                  </v-col>
+                </v-row>
                 <v-divider class="mx-3"></v-divider>
               </v-list>
             </v-card>
@@ -33,14 +48,30 @@
             <v-card height="396px" class="scrollbar" id="scrollable">
               <div v-for="(message, index) in messages" :key="index">
                 <v-divider class="mx-3"></v-divider>
-                <v-container>
+                <v-container class="px-5">
                   <v-row>
-                    <v-avatar size="40">
-                      <v-img></v-img>
-                    </v-avatar>
-                    <v-col>
-                      <p>{{ message.date }}</p>
-                      <p>{{ message.message }}</p>
+                    <v-col cols="1">
+                      <v-avatar size="40">
+                        <v-img
+                          v-if="yourUser.uid == message.uid"
+                          :src="yourUser.photo"
+                        ></v-img>
+                      </v-avatar>
+                    </v-col>
+                    <v-col class="pr-5" cols="11">
+                      <v-row>
+                        <span
+                          class="font-weight-bold"
+                          v-if="yourUser.uid == message.uid"
+                          >{{ yourUser.nombre }}</span
+                        >
+                      </v-row>
+                      <v-row>
+                        <span class="caption">{{ message.date }}</span>
+                      </v-row>
+                      <v-row>
+                        <span class="mt-2">{{ message.message }}</span>
+                      </v-row>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -55,7 +86,7 @@
                       class="mt-1"
                       label="Welcome! :)"
                       solo
-                      box
+                      background-color="amber lighten-4"
                       clearable
                       no-resize
                       rows="2"
@@ -98,9 +129,9 @@
               <v-img :src="user.photo"></v-img>
             </v-avatar>
             <v-list-item-content>
-              <v-list-item-title class="ml-2 font-weight-bold">
-                {{ user.nombre }}
-              </v-list-item-title>
+              <v-list-item-title class="ml-2 font-weight-bold">{{
+                user.nombre
+              }}</v-list-item-title>
             </v-list-item-content>
             <v-btn
               tile
@@ -139,6 +170,7 @@ export default {
   },
   beforeMount() {
     this.uid = au.currentUser.uid;
+    this.currentUsers();
     this.chatCreated();
   },
   created() {
@@ -172,17 +204,12 @@ export default {
         }
       }
       this.$store.commit("setUsers", this.otherUsers);
-
+      console.log("User:" + this.yourUser);
       console.log(this.otherUsers);
     },
     createChat(index) {
       let othUser = this.otherUsers[index];
       console.log(index);
-
-      // db.ref("chats")
-      //   .child(this.yourUser.uid + "-" + othUser.uid)
-      //   .set("");
-
       let chat = db
         .ref()
         .child("users")
@@ -231,11 +258,6 @@ export default {
     },
     changeRoom(index) {
       this.othUid = this.rooms[index].uid;
-      // db.ref("chats")
-      //   .child(this.uid + "-" + this.othUid)
-      //   .on("value", data => {
-      //     this.messages = Object.values(data.val());
-      //   });
       console.log(this.othUid);
       this.getMessage();
     },
@@ -261,6 +283,7 @@ export default {
         date: date
       };
       console.log(this.othUid);
+
       db.ref("chats/" + this.uid + "-" + this.othUid + "/").push(obj);
       this.text = "";
     },
@@ -268,14 +291,29 @@ export default {
       db.ref("chats/" + this.uid + "-" + this.othUid).on("value", data => {
         this.messages = Object.values(data.val());
       });
-
-      this.yourMessage;
     },
     scrollToEnd() {
       // Allows to show always the last message sent when you enter the room.
       document.getElementById("scrollable").scrollTop = document.getElementById(
         "scrollable"
       ).scrollHeight;
+    },
+    deleteChat(index) {
+      db.ref("users")
+        .child(this.uid)
+        .child("rooms")
+        .child(this.uid + "-" + this.othUid)
+        .remove();
+      let aux = [];
+      let a = 0;
+      for (let i = 0; i < this.rooms.length; i++) {
+        if (index != i) {
+          aux[a] = this.rooms[i];
+          a++;
+        }
+      }
+      this.rooms = aux;
+      this.messages = "";
     }
   }
 };
