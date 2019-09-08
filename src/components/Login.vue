@@ -62,7 +62,7 @@ export default {
         users.child(this.uid + "/photo").set(this.photo);
         users.child(this.uid + "/uid").set(this.uid);
         users.child(this.uid + "/nombre").set(this.nombre);
-
+        this.$store.commit("setUid", this.uid);
         this.$emit("logged", "app-logged");
       });
     }
