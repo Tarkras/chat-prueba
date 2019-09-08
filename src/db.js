@@ -1,8 +1,6 @@
-import firebase from "firebase/app";
-import "firebase/database";
-import "firebase/auth";
+import firebase from "firebase";
 
-const firebaseApp = firebase.initializeApp({
+firebase.initializeApp({
   apiKey: "AIzaSyA4bPppeIycaS__7LCyK3989h8yExJ2ar8",
   authDomain: "prueba-chat-didac-ortega.firebaseapp.com",
   databaseURL: "https://prueba-chat-didac-ortega.firebaseio.com",
@@ -12,5 +10,8 @@ const firebaseApp = firebase.initializeApp({
   appId: "1:857260690581:web:c9106c31700ec00d4ddf9c"
 });
 
-export const db = firebaseApp.database();
-export const auth = firebaseApp.auth();
+const db = firebase.database();
+const au = firebase.auth();
+const fr = firebase;
+
+export { db, au, fr };
