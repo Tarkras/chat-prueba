@@ -19,12 +19,17 @@
           </v-col>
         </v-row>
       </v-card>
-      <v-navigation-drawer
-        v-model="drawer"
-        absolute
-        temporary
-        clipped
-      ></v-navigation-drawer>
+      <v-navigation-drawer v-model="drawer" absolute temporary clipped>
+        <v-list-item>
+          <v-list-item-icon>
+            <v-icon>mdiAccount</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Users</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-divider></v-divider>
+      </v-navigation-drawer>
     </v-container>
   </v-layout>
 </template>
