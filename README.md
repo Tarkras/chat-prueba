@@ -2,11 +2,29 @@
 
 ## Funcionalidades
 
+El proyecto es una versión reducida de una aplicación de mensajeria instantánea.
+
+El proyecto esta compuesto por:
+
+1. Una barra de navegación la cual tiene un boton de Log Out cuando el usuario esta conectado para que pueda desconectarse
+
+2. El cuerpo de la página.
+
+### Cuerpo de la pagina.
+
+Aqui se permite al usuario hacer un login con su cuenta de Google.
+
+Una vez hecho el Login aparece la aplicación de mensajeria instantánea para el navegador. La aplicación contiene una barra lateral a la izquierda donde apareceran todos los chats creados o que tienes abiertos en el momento. A la derecha apareceran los mensajes del chat que tengas seleccionado y debajo de la zona donde aparecen los mensajes hay un area para escribir y al lado un boton para enviar mensajes.
+
+En la aplicación hay un boton "CREATE CHAT" que habre un desplegable donde aparecen todos lo usuarios conectados a la aplicación con un boton de crear "Create" al lado para crear un chat nuevo con la persona elegida.
+
+Este chat aparece en la barra lateral, cada chat abierto tiene un boton "Delete" para borrar la conversación con esa persona y si se pulsa encima del nombre y/o fotografia del chat cambiaras de conversación con otra persona.
+
 ## Clonar proyecto
 
 1. Ir al directorio deseado dentro de tu ordenador con la terminal.
 
-2. Clonar el proyecto usar comando:
+2. Clonar el proyecto utilizando el comando:
 
 ```
 git clone https://github.com/Tarkras/chat-prueba.git
@@ -16,7 +34,13 @@ git clone https://github.com/Tarkras/chat-prueba.git
 
 ### 1. Configurar proyecto
 
-A traves de la terminal ir a la carpeta del proyecto. Despues usar comando:
+Ir a la carpeta del proyecto en la terminal.
+
+```
+cd chat-prueba
+```
+
+Instalar todos los paquetes y dependencias necesarias del proyecto a traves del comando:
 
 ```
 npm install
