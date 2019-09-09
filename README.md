@@ -14,13 +14,13 @@ El proyecto esta compuesto por:
 
 Aqui se permite al usuario hacer un login con su cuenta de Google.
 
-Una vez hecho el Login aparece la aplicación de mensajeria instantánea para el navegador.
+Una vez hecho el Login aparecerá la aplicación de mensajeria instantánea para el navegador.
 
 La aplicación contiene una barra superior con un boton "CREATE CHAT", tu imagen y aparecera la imagen y el nombre de la persona con la que estes hablando al lado del boton. Abajo hay una barra lateral a la izquierda donde apareceran todos los chats creados o que tienes abiertos en el momento. A la derecha apareceran los mensajes del chat que tengas seleccionado y debajo de la zona donde aparecen los mensajes hay un area para escribir y al lado un boton para enviar mensajes.
 
 El boton "CREATE CHAT", habre un desplegable donde aparecen todos los usuarios que tienen cuenta en la aplicación. Al lado de cada usuario hay un boton de crear "Create" para crear un chat nuevo con la persona elegida.
 
-Este chat aparece en la barra lateral, cada chat abierto tiene un boton "Delete" para borrar la conversación con esa persona y si se pulsa encima del nombre y/o fotografia del chat cambiaras de conversación con otra persona. Al cambiar se cargaran los mensajes de mas reciente a menos reciente, siendo los más antiguos los que esten más arriba.
+Cada chat creado aparecerá en la barra lateral y cada chat de la barra lateral tiene un boton "Delete" para borrar la conversación con esa persona. Al pulsar encima del nombre y/o fotografia del chat cambiaras de conversación con otra persona. Al cambiar se cargaran los mensajes de mas reciente a menos reciente, siendo los más antiguos los que esten más arriba.
 
 ## Clonar proyecto
 
