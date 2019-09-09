@@ -56,4 +56,8 @@ En la carpeta del proyecto a traves de la terminal utilizar comando para ejecuta
 npm run serve
 ```
 
-Esto hara un compilado y una recarga en caliente para poder visualizar el proyecto en el navegador.
+Esto hara un compilado y una recarga en caliente para poder visualizar el proyecto en el navegador. Para visualizarlo escribe en el navegador el puerto local mostrado en la terminal. Normalmente es:
+
+```
+localhost:8080
+```
