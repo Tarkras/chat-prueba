@@ -99,6 +99,7 @@
                     </v-col>
                   </v-row>
                 </v-container>
+                <v-divider class="mx-3"></v-divider>
               </div>
             </v-card>
             <!-- ** This card allows you to send messages. **-->
