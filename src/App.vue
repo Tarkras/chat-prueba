@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <!-- ** Navigation bar with the log out button when you are logged in. ** -->
     <v-app-bar app dense dark>
       <v-avatar size="36">
         <v-img v-bind:src="image" contain></v-img>
@@ -11,8 +12,7 @@
         tile
         outlined
         v-on:click="signOut"
-        >Log Out</v-btn
-      >
+      >Log Out</v-btn>
     </v-app-bar>
     <v-content style="padding-top: 48px">
       <router-view></router-view>

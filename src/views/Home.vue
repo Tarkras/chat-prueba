@@ -1,5 +1,6 @@
 <template>
   <v-layout fill-height>
+    <!-- ** Dynamic component: It will change the view if you are logged or not. **-->
     <component :is="component" @logged="logged"></component>
   </v-layout>
 </template>

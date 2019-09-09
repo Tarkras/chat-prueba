@@ -1,18 +1,41 @@
 <template>
   <v-layout align-center justify-center>
     <v-container fill-height>
+      <!-- ** Main card. Contains the other elements. **-->
       <v-card width="100%" height="540px">
         <v-row no-gutters>
           <v-col cols="12">
             <v-app-bar light class="grey lighten-1">
-              <v-btn text outlined @click="handler">
-                <v-icon left>mdi-message-text</v-icon>Create chat
-              </v-btn>
+              <v-row>
+                <!-- ** Create chat button and your account image. **-->
+                <v-col cols="3" class="column-border">
+                  <v-btn fab small>
+                    <v-avatar size="40">
+                      <v-img :src="yourUser.photo"></v-img>
+                    </v-avatar>
+                  </v-btn>
+                  <v-btn text outlined @click="handler" class="ml-3">
+                    <v-icon left>mdi-message-text</v-icon>Create chat
+                  </v-btn>
+                </v-col>
+
+                <!-- ** Shows with whom you are chatting. **-->
+                <v-col cols="9">
+                  <v-row v-if="othUser != null">
+                    <v-avatar size="40" class="ml-3">
+                      <v-img :src="othUser.photo"></v-img>
+                    </v-avatar>
+                    <span class="ml-2 mt-2 font-weight-bold">{{ othUser.name }}</span>
+                  </v-row>
+                </v-col>
+              </v-row>
             </v-app-bar>
           </v-col>
           <v-col cols="3" class="pa-0">
+            <!-- ** This card shows the current chats that you have. ** -->
+            <!-- ** Here you can change between chats and delete the chat. **-->
             <v-card height="476px" max-height="100%" class="scrollbar">
-              <v-list v-for="(room, index) in rooms" :key="index">
+              <v-list class="py-0" v-for="(room, index) in rooms" :key="index">
                 <v-row no-gutters>
                   <v-col cols="9">
                     <v-list-item-group active-class>
@@ -21,9 +44,11 @@
                           <v-img :src="room.photo"></v-img>
                         </v-avatar>
                         <v-list-item-content>
-                          <v-list-item-title class="ml-2 font-weight-bold">{{
+                          <v-list-item-title class="ml-2 font-weight-bold">
+                            {{
                             room.name
-                          }}</v-list-item-title>
+                            }}
+                          </v-list-item-title>
                         </v-list-item-content>
                       </v-list-item>
                     </v-list-item-group>
@@ -36,8 +61,7 @@
                       color="error"
                       class="v-btn-outlined-exception"
                       @click="deleteChat(index)"
-                      >Delete</v-btn
-                    >
+                    >Delete</v-btn>
                   </v-col>
                 </v-row>
                 <v-divider class="mx-3"></v-divider>
@@ -45,6 +69,8 @@
             </v-card>
           </v-col>
           <v-col cols="9" class="pa-0">
+            <!-- ** 
+            Here the messages with whom you are talking will be displayed. **-->
             <v-card height="396px" class="scrollbar" id="scrollable">
               <div v-for="(message, index) in messages" :key="index">
                 <v-divider class="mx-3"></v-divider>
@@ -52,10 +78,7 @@
                   <v-row>
                     <v-col cols="1">
                       <v-avatar size="40">
-                        <v-img
-                          v-if="yourUser.uid == message.uid"
-                          :src="yourUser.photo"
-                        ></v-img>
+                        <v-img v-if="yourUser.uid == message.uid" :src="yourUser.photo"></v-img>
                         <v-img v-else :src="othUser.photo"></v-img>
                       </v-avatar>
                     </v-col>
@@ -64,8 +87,7 @@
                         <span
                           class="font-weight-bold"
                           v-if="yourUser.uid == message.uid"
-                          >{{ yourUser.nombre }}</span
-                        >
+                        >{{ yourUser.nombre }}</span>
                         <span v-else>{{ othUser.name }}</span>
                       </v-row>
                       <v-row>
@@ -79,6 +101,7 @@
                 </v-container>
               </div>
             </v-card>
+            <!-- ** This card allows you to send messages. **-->
             <v-card height="80px" color="grey lighten-2">
               <v-card-actions class="px-0">
                 <v-row no-gutters justify="center">
@@ -106,6 +129,9 @@
           </v-col>
         </v-row>
       </v-card>
+      <!-- **This is the list with the people that have an account in the web. **-->
+      <!-- ** This list will be shown when you click the create chat button. **-->
+      <!-- ** In order to create the chat you have to click the Create button for the person in the list.** -->
       <v-navigation-drawer v-model="drawer" absolute temporary clipped>
         <v-row justify="center">
           <v-col cols="1" align-self="center">
@@ -125,15 +151,17 @@
         <v-divider></v-divider>
         <v-divider></v-divider>
         <v-divider></v-divider>
-        <v-list v-for="(user, index) in otherUsers" :key="user.uid">
+        <v-list class="py-0 scrollbar" v-for="(user, index) in otherUsers" :key="user.uid">
           <v-list-item>
             <v-avatar size="36">
               <v-img :src="user.photo"></v-img>
             </v-avatar>
             <v-list-item-content>
-              <v-list-item-title class="ml-2 font-weight-bold">{{
+              <v-list-item-title class="ml-2 font-weight-bold">
+                {{
                 user.nombre
-              }}</v-list-item-title>
+                }}
+              </v-list-item-title>
             </v-list-item-content>
             <v-btn
               tile
@@ -142,8 +170,7 @@
               color="success"
               class="v-btn-outlined-exception"
               @click="createChat(index)"
-              >Create</v-btn
-            >
+            >Create</v-btn>
           </v-list-item>
           <v-divider class="mx-3"></v-divider>
         </v-list>
@@ -158,6 +185,7 @@ import { db, au } from "../db";
 export default {
   data() {
     return {
+      chatting: "Chatting with:",
       drawer: false,
       dbUsers: "",
       yourUser: "",
@@ -176,7 +204,7 @@ export default {
   },
   beforeMount() {
     this.uid = au.currentUser.uid;
-    // this.currentUsers();
+    this.currentUsers();
     this.chatCreated();
   },
   created() {
@@ -269,7 +297,6 @@ export default {
     changeRoom(index) {
       // This functions allows you to change to another chat room.
       this.othUser = this.rooms[index];
-
       this.getMessage();
     },
     sendMessage() {
@@ -343,6 +370,7 @@ export default {
       }
       this.rooms = aux;
       this.messages = "";
+      this.othUser = "";
     }
   }
 };
@@ -360,5 +388,12 @@ export default {
 
 .scrollbar {
   overflow: auto;
+}
+
+.column-border {
+  border-right: solid;
+
+  border-width: 1px;
+  color: dimgray;
 }
 </style>
