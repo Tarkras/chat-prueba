@@ -71,7 +71,7 @@
           <v-col cols="9" class="pa-0">
             <!-- ** 
             Here the messages with whom you are talking will be displayed. **-->
-            <v-card height="396px" class="grey lighten-3" id="scrollable">
+            <v-card height="396px" class="grey lighten-3 scrollbar" id="scrollable">
               <div v-for="(message, index) in messages" :key="index">
                 <v-divider class="mx-3"></v-divider>
                 <v-container class="px-5">
