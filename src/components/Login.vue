@@ -3,12 +3,21 @@
     <!-- **Here is a simple card with the google login button** -->
     <v-container align-center justify-center fill-height>
       <v-layout column justify-center align-center>
-        <v-card width="300" height="300" fixed flat outlined color="grey lighten-2">
+        <v-card
+          width="300"
+          height="300"
+          fixed
+          flat
+          outlined
+          color="grey lighten-2"
+        >
           <v-row style="height: 100%">
             <v-col>
               <v-layout justify-center>
                 <v-card-title>
-                  <span class="headline font-weight-medium">Log In with Google</span>
+                  <span class="headline font-weight-medium"
+                    >Log In with Google</span
+                  >
                 </v-card-title>
               </v-layout>
               <v-layout justify-center>
@@ -17,7 +26,12 @@
               <v-row style="height: 244px" align="center" no-gutters>
                 <v-col>
                   <v-row justify="center">
-                    <v-btn fab x-large class="v-btn-google" v-on:click="loginGoogle">
+                    <v-btn
+                      fab
+                      x-large
+                      class="v-btn-google"
+                      v-on:click="loginGoogle"
+                    >
                       <v-icon></v-icon>
                     </v-btn>
                   </v-row>
@@ -60,7 +74,6 @@ export default {
         users.child(this.uid + "/photo").set(this.photo);
         users.child(this.uid + "/uid").set(this.uid);
         users.child(this.uid + "/nombre").set(this.nombre);
-        this.$store.commit("setUid", this.uid);
         this.$emit("logged", "app-logged");
       });
     }
