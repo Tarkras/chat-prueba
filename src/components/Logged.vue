@@ -26,9 +26,7 @@
                       <v-img :src="othUser.photo"></v-img>
                     </v-avatar>
                     <span class="ml-2 mt-2 font-weight-bold">
-                      {{
-                      othUser.name
-                      }}
+                      {{ othUser.name }}
                     </span>
                   </v-row>
                 </v-col>
@@ -38,8 +36,16 @@
           <v-col cols="3" class="pa-0">
             <!-- ** This card shows the current chats that you have. ** -->
             <!-- ** Here you can change between chats and delete the chat. **-->
-            <v-card height="476px" class="scrollbar grey lighten-4" max-height="100%">
-              <v-list class="py-0 grey lighten-4" v-for="(room, index) in rooms" :key="index">
+            <v-card
+              height="476px"
+              class="scrollbar grey lighten-4"
+              max-height="100%"
+            >
+              <v-list
+                class="py-0 grey lighten-4"
+                v-for="(room, index) in rooms"
+                :key="index"
+              >
                 <v-row no-gutters>
                   <v-col cols="9">
                     <v-list-item-group active-class>
@@ -48,7 +54,9 @@
                           <v-img :src="room.photo"></v-img>
                         </v-avatar>
                         <v-list-item-content>
-                          <v-list-item-title class="ml-2 font-weight-bold">{{ room.name }}</v-list-item-title>
+                          <v-list-item-title class="ml-2 font-weight-bold">{{
+                            room.name
+                          }}</v-list-item-title>
                         </v-list-item-content>
                       </v-list-item>
                     </v-list-item-group>
@@ -61,7 +69,8 @@
                       color="error"
                       class="v-btn-outlined-exception"
                       @click="deleteChat(index)"
-                    >Delete</v-btn>
+                      >Delete</v-btn
+                    >
                   </v-col>
                 </v-row>
                 <v-divider class="mx-3"></v-divider>
@@ -71,14 +80,21 @@
           <v-col cols="9" class="pa-0">
             <!-- ** 
             Here the messages with whom you are talking will be displayed. **-->
-            <v-card height="396px" class="grey lighten-3 scrollbar" id="scrollable">
+            <v-card
+              height="396px"
+              class="grey lighten-3 scrollbar"
+              id="scrollable"
+            >
               <div v-for="(message, index) in messages" :key="index">
                 <v-divider class="mx-3"></v-divider>
                 <v-container class="px-5">
                   <v-row>
                     <v-col cols="1">
                       <v-avatar size="40">
-                        <v-img v-if="yourUser.uid == message.uid" :src="yourUser.photo"></v-img>
+                        <v-img
+                          v-if="yourUser.uid == message.uid"
+                          :src="yourUser.photo"
+                        ></v-img>
                         <v-img v-else :src="othUser.photo"></v-img>
                       </v-avatar>
                     </v-col>
@@ -87,8 +103,11 @@
                         <span
                           class="font-weight-bold"
                           v-if="yourUser.uid == message.uid"
-                        >{{ yourUser.nombre }}</span>
-                        <span v-else>{{ othUser.name }}</span>
+                          >{{ yourUser.nombre }}</span
+                        >
+                        <span class="font-weight-bold" v-else>
+                          {{ othUser.name }}
+                        </span>
                       </v-row>
                       <v-row>
                         <span class="caption">{{ message.date }}</span>
@@ -152,13 +171,19 @@
         <v-divider></v-divider>
         <v-divider></v-divider>
         <v-divider></v-divider>
-        <v-list class="py-0 scrollbar" v-for="(user, index) in otherUsers" :key="user.uid">
+        <v-list
+          class="py-0 scrollbar"
+          v-for="(user, index) in otherUsers"
+          :key="user.uid"
+        >
           <v-list-item>
             <v-avatar size="36">
               <v-img :src="user.photo"></v-img>
             </v-avatar>
             <v-list-item-content>
-              <v-list-item-title class="ml-2 font-weight-bold">{{ user.nombre }}</v-list-item-title>
+              <v-list-item-title class="ml-2 font-weight-bold">{{
+                user.nombre
+              }}</v-list-item-title>
             </v-list-item-content>
             <v-btn
               tile
@@ -167,7 +192,8 @@
               color="success"
               class="v-btn-outlined-exception"
               @click="createChat(index)"
-            >Create</v-btn>
+              >Create</v-btn
+            >
           </v-list-item>
           <v-divider class="mx-3"></v-divider>
         </v-list>
@@ -330,6 +356,22 @@ export default {
         return;
       }
       this.text = "";
+
+      // This part creates the room for the other person if this person has deleted the chat and you sent a message afterwards.
+      let othChat = this.$firebaseRefs.user
+        .child(this.othUser.uid)
+        .child("rooms");
+
+      othChat
+        .child(this.othUser.uid + "-" + this.yourUser.uid + "/name")
+        .set(this.yourUser.nombre);
+
+      othChat
+        .child(this.othUser.uid + "-" + this.yourUser.uid + "/photo")
+        .set(this.yourUser.photo);
+      othChat
+        .child(this.othUser.uid + "-" + this.yourUser.uid + "/uid")
+        .set(this.yourUser.uid);
     },
     getMessage() {
       this.$firebaseRefs.chats
