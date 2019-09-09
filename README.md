@@ -20,7 +20,7 @@ La aplicación contiene una barra superior con un boton "CREATE CHAT", tu imagen
 
 El boton "CREATE CHAT", habre un desplegable donde aparecen todos los usuarios que tienen cuenta en la aplicación. Al lado de cada usuario hay un boton de crear "Create" para crear un chat nuevo con la persona elegida.
 
-Cada chat creado aparecerá en la barra lateral y cada chat de la barra lateral tiene un boton "Delete" para borrar la conversación con esa persona. Al pulsar encima del nombre y/o fotografia del chat cambiaras de conversación con otra persona. Al cambiar se cargaran los mensajes de mas reciente a menos reciente, siendo los más antiguos los que esten más arriba.
+Cada chat creado aparecerá en la barra lateral y cada chat de la barra lateral tiene un boton "Delete" para borrar la conversación con esa persona pero la otra persona, aún tendra el chat para ver los mensajes que le hayas enviado. Al pulsar encima del nombre y/o fotografia del chat cambiaras de conversación con otra persona. Al cambiar se cargaran los mensajes de mas reciente a menos reciente, siendo los más antiguos los que esten más arriba.
 
 ## Clonar proyecto
 
