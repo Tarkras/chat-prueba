@@ -56,6 +56,7 @@
                           v-if="yourUser.uid == message.uid"
                           :src="yourUser.photo"
                         ></v-img>
+                        <v-img v-else :src="othUser.photo"></v-img>
                       </v-avatar>
                     </v-col>
                     <v-col class="pr-5" cols="11">
@@ -65,6 +66,7 @@
                           v-if="yourUser.uid == message.uid"
                           >{{ yourUser.nombre }}</span
                         >
+                        <span v-else>{{ othUser.name }}</span>
                       </v-row>
                       <v-row>
                         <span class="caption">{{ message.date }}</span>
@@ -163,14 +165,18 @@ export default {
       rooms: "",
       uid: "",
       text: "",
-      othUid: "",
+      othUser: "",
       messages: "",
       yourMessage: ""
     };
   },
+  firebase: {
+    user: db.ref("users"),
+    chats: db.ref("chats")
+  },
   beforeMount() {
     this.uid = au.currentUser.uid;
-    this.currentUsers();
+    // this.currentUsers();
     this.chatCreated();
   },
   created() {
@@ -188,11 +194,14 @@ export default {
       this.currentUsers();
     },
     currentUsers() {
+      // Users that have created an account in the web.
+      // Shows a list in a drawer that you can open when you
+      // click in the Create Chat button.
       let yourUser = this.uid;
-      db.ref("users").on("value", data => {
+      this.$firebaseRefs.user.on("value", data => {
         this.dbUsers = Object.values(data.val());
       });
-      console.log(this.dbUsers);
+
       let a = 0;
       for (let i = 0; i < this.dbUsers.length; i++) {
         if (this.dbUsers[i].uid != yourUser) {
@@ -204,15 +213,19 @@ export default {
         }
       }
       this.$store.commit("setUsers", this.otherUsers);
-      console.log("User:" + this.yourUser);
-      console.log(this.otherUsers);
     },
     createChat(index) {
+      // In the drawer when you click on the button Create
+      // it will create a chat room with the person that
+      // you want to talk to.
       let othUser = this.otherUsers[index];
-      console.log(index);
-      let chat = db
-        .ref()
-        .child("users")
+
+      // It creates two "different" chat rooms, one for you and
+      // the other for the other person. In this way, when you
+      // delete the chat the other person still has the chat room
+      // with all the messages. In the eyes of the user, it seems
+      // like it is one chat.
+      let chat = this.$firebaseRefs.user
         .child(this.yourUser.uid)
         .child("rooms");
 
@@ -227,41 +240,40 @@ export default {
         .child(this.yourUser.uid + "-" + othUser.uid + "/uid")
         .set(othUser.uid);
 
-      let othChat = db
-        .ref()
-        .child("users")
-        .child(othUser.uid)
-        .child("rooms");
+      let othChat = this.$firebaseRefs.user.child(othUser.uid).child("rooms");
 
       othChat
-        .child(this.yourUser.uid + "-" + othUser.uid + "/name")
+        .child(othUser.uid + "-" + this.yourUser.uid + "/name")
         .set(this.yourUser.nombre);
 
       othChat
-        .child(this.yourUser.uid + "-" + othUser.uid + "/photo")
+        .child(othUser.uid + "-" + this.yourUser.uid + "/photo")
         .set(this.yourUser.photo);
       othChat
-        .child(this.yourUser.uid + "-" + othUser.uid + "/uid")
+        .child(othUser.uid + "-" + this.yourUser.uid + "/uid")
         .set(this.yourUser.uid);
 
       this.drawer = false;
       this.chatCreated();
     },
     chatCreated() {
-      db.ref("users")
+      // This function pulls out your rooms to display it on the
+      // page.
+      this.$firebaseRefs.user
         .child(this.uid)
         .child("rooms")
         .on("value", data => {
           this.rooms = Object.values(data.val());
         });
-      console.log(this.rooms);
     },
     changeRoom(index) {
-      this.othUid = this.rooms[index].uid;
-      console.log(this.othUid);
+      // This functions allows you to change to another chat room.
+      this.othUser = this.rooms[index];
+
       this.getMessage();
     },
     sendMessage() {
+      // Writes the message in the database.
       let today = new Date();
       let date =
         "[" +
@@ -282,34 +294,51 @@ export default {
         uid: this.uid,
         date: date
       };
-      console.log(this.othUid);
 
-      db.ref("chats/" + this.uid + "-" + this.othUid + "/").push(obj);
+      if (this.text != "") {
+        this.$firebaseRefs.chats
+          .child(this.uid + "-" + this.othUser.uid + "/")
+          .push(obj);
+        this.$firebaseRefs.chats
+          .child(this.othUser.uid + "-" + this.yourUser.uid + "/")
+          .push(obj);
+      } else {
+        return;
+      }
       this.text = "";
     },
     getMessage() {
-      db.ref("chats/" + this.uid + "-" + this.othUid).on("value", data => {
-        this.messages = Object.values(data.val());
-      });
+      this.$firebaseRefs.chats
+        .child(this.uid + "-" + this.othUser.uid + "/")
+        .on("value", data => {
+          this.messages = Object.values(data.val());
+        });
     },
     scrollToEnd() {
-      // Allows to show always the last message sent when you enter the room.
+      // Allows to show always the last message sent when
+      // you enter the room.
       document.getElementById("scrollable").scrollTop = document.getElementById(
         "scrollable"
       ).scrollHeight;
     },
     deleteChat(index) {
-      db.ref("users")
-        .child(this.uid)
-        .child("rooms")
-        .child(this.uid + "-" + this.othUid)
-        .remove();
+      // It deletes the chat room and the messages only for you.
+      // The other person still has the messages.
       let aux = [];
       let a = 0;
       for (let i = 0; i < this.rooms.length; i++) {
         if (index != i) {
           aux[a] = this.rooms[i];
           a++;
+        }
+        if (index == i) {
+          let removeId = this.rooms[i].uid;
+          this.$firebaseRefs.user
+            .child(this.uid)
+            .child("rooms")
+            .child(this.uid + "-" + removeId)
+            .remove();
+          this.$firebaseRefs.chats.child(this.uid + "-" + removeId).remove();
         }
       }
       this.rooms = aux;

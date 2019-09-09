@@ -50,6 +50,9 @@ export default {
       nombre: ""
     };
   },
+  firebase: {
+    user: db.ref("users")
+  },
   methods: {
     loginGoogle() {
       let provider = new fr.auth.GoogleAuthProvider();
@@ -58,7 +61,7 @@ export default {
         this.uid = au.currentUser.uid;
         this.photo = au.currentUser.photoURL;
         this.nombre = au.currentUser.displayName;
-        let users = db.ref("users");
+        let users = this.$firebaseRefs.user;
         users.child(this.uid + "/photo").set(this.photo);
         users.child(this.uid + "/uid").set(this.uid);
         users.child(this.uid + "/nombre").set(this.nombre);
